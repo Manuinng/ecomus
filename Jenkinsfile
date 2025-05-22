@@ -8,9 +8,9 @@ pipeline {
             }
         }
 
-        stage('Hello') {
+        stage('Trigger Test ') {
             steps {
-                echo 'Hello Worldd'
+                echo 'Triggering test job...'
             }
         }
     }
