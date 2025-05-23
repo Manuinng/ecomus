@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        GITHUB_APP = credentials('github-checks-app')
+        REPO = 'Manuinng/ecomus'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,17 +13,29 @@ pipeline {
             }
         }
 
-        stage('Trigger Test Job') {
+        stage('Run Tests Job') {
             steps {
                 script {
-                    // Obtener el SHA del commit actual
-                    def commitSha = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-                    echo "Commit SHA: ${commitSha}"
+                    def buildResult = build job: 'Job2_TestPipeline', parameters: [
+                        string(name: 'COMMIT_SHA', value: env.GIT_COMMIT)
+                    ], wait: true
 
-                    // Llamar al job 2, pasándole el commit SHA como parámetro
-                    build job: 'TAQC-Team 2', parameters: [
-                        string(name: 'COMMIT_SHA', value: commitSha)
-                    ]
+                    echo "Job 2 finished with result: ${buildResult.getResult()}"
+                }
+            }
+        }
+
+        stage('Publish GitHub Check') {
+            steps {
+                script {
+                    def conclusion = (currentBuild.result == 'SUCCESS') ? 'SUCCESS' : 'FAILURE'
+
+                    publishChecks(
+                        name: 'Automated-tests',
+                        conclusion: conclusion,
+                        title: 'Test Result',
+                        summary: (conclusion == 'SUCCESS') ? '✅ All tests passed.' : '❌ Some tests failed.'
+                    )
                 }
             }
         }
