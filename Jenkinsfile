@@ -16,7 +16,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    def testJob = build job: 'TAQC-Team 2', wait: true
+                    def testJob = build job: 'TAQC-Team 2', wait: true, propagate: false
 
                     copyArtifacts(
                         projectName: 'TAQC-Team 2',
