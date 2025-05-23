@@ -16,7 +16,7 @@ pipeline {
                     echo "Commit SHA: ${commitSha}"
 
                     // Llamar al job 2, pasándole el commit SHA como parámetro
-                    build job: 'NombreDelJob2', parameters: [
+                    build job: 'TAQC-Team 2', parameters: [
                         string(name: 'COMMIT_SHA', value: commitSha)
                     ]
                 }
