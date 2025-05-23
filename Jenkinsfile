@@ -13,28 +13,38 @@ pipeline {
             }
         }
 
-        stage('Run Tests Job') {
+        stage('Run Tests') {
             steps {
                 script {
-                    def buildResult = build job: 'TAQC-Team 2', parameters: [
-                        string(name: 'COMMIT_SHA', value: env.GIT_COMMIT)
-                    ], wait: true
+                    def testJob = build job: 'TAQC-Team 2', wait: true
 
-                    echo "TAQC-Team 2 finished with result: ${buildResult.getResult()}"
+                    copyArtifacts(
+                        projectName: 'TAQC-Team 2',
+                        filter: 'results.xml',
+                        selector: specific("${testJob.getNumber()}")
+                    )
                 }
             }
         }
 
-        stage('Publish GitHub Check') {
+        stage('Publicar Resultado') {
             steps {
                 script {
-                    def conclusion = (currentBuild.result == 'SUCCESS') ? 'SUCCESS' : 'FAILURE'
+                    def testFailed = false
+                    def resultXml = readFile 'results.xml'
+                    if (resultXml.contains('failures="0"') && resultXml.contains('errors="0"')) {
+                        testFailed = false
+                    } else {
+                        testFailed = true
+                    }
+
+                    def conclusion = testFailed ? 'FAILURE' : 'SUCCESS'
 
                     publishChecks(
                         name: 'Automated-tests',
-                        conclusion: conclusion,
                         title: 'Test Result',
-                        summary: (conclusion == 'SUCCESS') ? '✅ All tests passed.' : '❌ Some tests failed.'
+                        summary: conclusion == 'SUCCESS' ? '✅ Todos los tests pasaron.' : '❌ Algunos tests fallaron.',
+                        conclusion: conclusion
                     )
                 }
             }
