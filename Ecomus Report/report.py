@@ -6,3 +6,4 @@ print("1. Ensure you have all the necessary data files in the 'data' directory."
 print("2. Make sure you have the required libraries installed.")
 print("3. Run the script to generate the report.")
 print("4. Check the 'output' directory for the generated report.")
+print("5. If you encounter any issues, refer to the troubleshooting section.")
