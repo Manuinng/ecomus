@@ -21,7 +21,7 @@ pipeline {
                     copyArtifacts(
                         projectName: 'TAQC-Team 2',
                         filter: 'results.xml',
-                        selector: specificBuild("${testJob.getNumber()}")
+                        selector: specific("${testJob.getNumber()}")
                     )
                 }
             }
