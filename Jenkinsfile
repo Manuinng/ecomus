@@ -13,39 +13,11 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Trigger Test Job') {
             steps {
                 script {
-                    def testJob = build job: 'TAQC-Team 2', wait: true, propagate: false
-
-                    copyArtifacts(
-                        projectName: 'TAQC-Team 2',
-                        filter: 'results.xml',
-                        selector: specific("${testJob.getNumber()}")
-                    )
-                }
-            }
-        }
-
-        stage('Publicar Resultado') {
-            steps {
-                script {
-                    def testFailed = false
-                    def resultXml = readFile 'results.xml'
-                    if (resultXml.contains('failures="0"') && resultXml.contains('errors="0"')) {
-                        testFailed = false
-                    } else {
-                        testFailed = true
-                    }
-
-                    def conclusion = testFailed ? 'FAILURE' : 'SUCCESS'
-
-                    publishChecks(
-                        name: 'Automated-tests',
-                        title: 'Test Result',
-                        summary: conclusion == 'SUCCESS' ? '✅ Todos los tests pasaron.' : '❌ Algunos tests fallaron.',
-                        conclusion: conclusion
-                    )
+                    def commitSha = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                    build job: 'TAQC-Team 2', parameters: [string(name: 'GIT_COMMIT_SHA', value: commitSha)]
                 }
             }
         }
