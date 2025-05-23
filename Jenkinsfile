@@ -8,9 +8,18 @@ pipeline {
             }
         }
 
-        stage('Trigger Test ') {
+        stage('Trigger Test Job') {
             steps {
-                echo 'Triggering test job...'
+                script {
+                    // Obtener el SHA del commit actual
+                    def commitSha = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                    echo "Commit SHA: ${commitSha}"
+
+                    // Llamar al job 2, pasándole el commit SHA como parámetro
+                    build job: 'NombreDelJob2', parameters: [
+                        string(name: 'COMMIT_SHA', value: commitSha)
+                    ]
+                }
             }
         }
     }
