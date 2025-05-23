@@ -16,11 +16,11 @@ pipeline {
         stage('Run Tests Job') {
             steps {
                 script {
-                    def buildResult = build job: 'Job2_TestPipeline', parameters: [
+                    def buildResult = build job: 'TAQC-Team 2', parameters: [
                         string(name: 'COMMIT_SHA', value: env.GIT_COMMIT)
                     ], wait: true
 
-                    echo "Job 2 finished with result: ${buildResult.getResult()}"
+                    echo "TAQC-Team 2 finished with result: ${buildResult.getResult()}"
                 }
             }
         }
