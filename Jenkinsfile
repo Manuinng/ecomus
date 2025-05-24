@@ -17,21 +17,22 @@ pipeline {
             steps {
                 script {
                     def testBuild = build job: 'TAQC-Team 2', propagate: false, wait: true
+
+                    copyArtifacts(
+                        projectName: 'TAQC-Team 2',
+                        selector: specific("${testBuild.number}"),
+                        filter: 'results-${testBuild.number}.xml',
+                        target: 'jobs-results',
+                        flatten: true
+                    ) 
                 }
 
-                copyArtifacts(
-                    projectName: 'TAQC-Team 2',
-                    selector: specific("${testBuild.number}"),
-                    filter: 'results.xml',
-                    target: 'jobs-results',
-                    flatten: true
-                ) 
             }
         }
 
         stage('Publish Test Results') {
             steps {
-                junit 'jobs-results/results.xml'
+                junit 'jobs-results/results-${testBuild.number}.xml'
 
                 publishChecks name: 'Test Results',
                               summary: 'Integration tests were executed.',
