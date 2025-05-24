@@ -16,9 +16,23 @@ pipeline {
         stage('Trigger Test Job') {
             steps {
                 script {
-                    def commitSha = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
-                    build job: 'TAQC-Team 2', parameters: [string(name: 'GIT_COMMIT_SHA', value: commitSha)]
+                    testBuild = build job: 'TAQC-Team 2', propagate: false, wait: true
                 }
+
+                copyArtifacts(
+                    projectName: 'TAQC-Team 2',
+                    selector: specific("${testBuild.number}"),
+                    filter: 'results.xml',
+                    target: 'jobs-results',
+                    flatten: true
+                ) 
+            }
+        }
+
+        stage('Publicar Resultado de Tests') {
+            steps {
+                publishChecks name: 'Resultados de Tests',
+                              results: [junit: 'jobs-results/results.xml']
             }
         }
     }
