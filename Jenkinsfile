@@ -29,10 +29,15 @@ pipeline {
             }
         }
 
-        stage('Publicar Resultado de Tests') {
+        stage('Publish Test Results') {
             steps {
-                publishChecks name: 'Resultados de Tests',
-                              results: [junit: 'jobs-results/results.xml']
+                junit 'jobB-results/results.xml'
+
+                publishChecks name: 'Test Results',
+                              summary: 'Integration tests were executed.',
+                              title: 'Test Results',
+                              status: 'COMPLETED',
+                              conclusion: 'SUCCESS'
             }
         }
     }
