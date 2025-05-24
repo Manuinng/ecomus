@@ -23,7 +23,7 @@ pipeline {
                         projectName: 'TAQC-Team 2',
                         selector: specific(env.TEST_BUILD_NUMBER),
                         filter: "results-${env.TEST_BUILD_NUMBER}.xml",
-                        target: 'jobs-results',
+                        target: 'Report',
                         flatten: true
                     )
                 }
@@ -33,11 +33,7 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                publishChecks name: 'Test Results',
-                              summary: 'Integration tests were executed.',
-                              title: 'Test Results',
-                              status: 'COMPLETED',
-                              conclusion: currentBuild.currentResult == 'SUCCESS' ? 'SUCCESS' : 'FAILURE'
+                junit "report/results-${env.TEST_BUILD_NUMBER}.xml"
             }
         }
     }
