@@ -33,8 +33,6 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit "jobs-results/results-${env.TEST_BUILD_NUMBER}.xml"
-
                 publishChecks name: 'Test Results',
                               summary: 'Integration tests were executed.',
                               title: 'Test Results',
