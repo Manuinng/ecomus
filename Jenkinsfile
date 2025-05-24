@@ -17,14 +17,15 @@ pipeline {
             steps {
                 script {
                     def testBuild = build job: 'TAQC-Team 2', propagate: false, wait: true
+                    env.TEST_BUILD_NUMBER = testBuild.number.toString()
 
                     copyArtifacts(
                         projectName: 'TAQC-Team 2',
-                        selector: specific("${testBuild.number}"),
-                        filter: 'results-${testBuild.number}.xml',
+                        selector: specific(env.TEST_BUILD_NUMBER),
+                        filter: "results-${env.TEST_BUILD_NUMBER}.xml",
                         target: 'jobs-results',
                         flatten: true
-                    ) 
+                    )
                 }
 
             }
@@ -32,7 +33,7 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit 'jobs-results/results-${testBuild.number}.xml'
+                junit "jobs-results/results-${env.TEST_BUILD_NUMBER}.xml"
 
                 publishChecks name: 'Test Results',
                               summary: 'Integration tests were executed.',
