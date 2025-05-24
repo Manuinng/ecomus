@@ -42,7 +42,7 @@ pipeline {
                               summary: 'Integration tests were executed.',
                               title: 'Test Results',
                               status: 'COMPLETED',
-                              conclusion: currentBuild.currentResult == 'SUCCESS' ? 'SUCCESS' : 'FAILURE',
+                              conclusion: currentBuild.currentResult == 'SUCCESS' ? 'SUCCESS' : 'FAILURE'
             }
         }
     }
