@@ -27,13 +27,6 @@ pipeline {
                         flatten: true
                     )
                 }
-
-            }
-        }
-
-        stage('Publish Test Results') {
-            steps {
-                sh "Sending test results to GitHub"
             }
             post {
                 always {
