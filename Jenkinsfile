@@ -28,10 +28,11 @@ pipeline {
                     )
                 }
             }
-            post {
-                always {
-                    junit "Report/results-${env.TEST_BUILD_NUMBER}.xml"
-                }
+        }
+
+        stage('Publish Test Results') {
+            steps {
+                junit "Report/results-${env.TEST_BUILD_NUMBER}.xml"
             }
         }
     }
