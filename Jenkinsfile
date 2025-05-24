@@ -33,7 +33,12 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit "Report/results-${env.TEST_BUILD_NUMBER}.xml"
+                sh "Sending test results to GitHub"
+            }
+            post {
+                always {
+                    junit "Report/results-${env.TEST_BUILD_NUMBER}.xml"
+                }
             }
         }
     }
