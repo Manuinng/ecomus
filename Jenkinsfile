@@ -26,6 +26,7 @@ pipeline {
                         target: 'jobs-results',
                         flatten: true
                     )
+                    env.TEST_BUILD_NUMBER = testBuildNumber
                 }
 
             }
@@ -33,13 +34,15 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit "jobs-results/results-${env.TEST_BUILD_NUMBER}.xml"
+                def testBuildNumber = env.TEST_BUILD_NUMBER
+
+                junit "jobs-results/results-${testBuildNumber}.xml"
 
                 publishChecks name: 'Test Results',
                               summary: 'Integration tests were executed.',
                               title: 'Test Results',
                               status: 'COMPLETED',
-                              conclusion: 'SUCCESS'
+                              conclusion: currentBuild.currentResult == 'SUCCESS' ? 'SUCCESS' : 'FAILURE',
             }
         }
     }
