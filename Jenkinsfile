@@ -37,7 +37,8 @@ pipeline {
                               summary: 'Integration tests were executed.',
                               title: 'Test Results',
                               status: 'COMPLETED',
-                              conclusion: 'SUCCESS'
+                              conclusion: 'SUCCESS',
+                              publisher: [$class: 'GitHubChecksPublisher']
             }
         }
     }
