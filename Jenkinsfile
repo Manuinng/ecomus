@@ -33,7 +33,7 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit "report/results-${env.TEST_BUILD_NUMBER}.xml"
+                junit "Report/results-${env.TEST_BUILD_NUMBER}.xml"
             }
         }
     }
