@@ -16,7 +16,7 @@ pipeline {
         stage('Trigger Test Job') {
             steps {
                 script {
-                    testBuild = build job: 'TAQC-Team 2', propagate: false, wait: true
+                    def testBuild = build job: 'TAQC-Team 2', propagate: false, wait: true
                 }
 
                 copyArtifacts(
@@ -31,14 +31,13 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit 'jobB-results/results.xml'
+                junit 'jobs-results/results.xml'
 
                 publishChecks name: 'Test Results',
                               summary: 'Integration tests were executed.',
                               title: 'Test Results',
                               status: 'COMPLETED',
-                              conclusion: 'SUCCESS',
-                              publisher: [$class: 'GitHubChecksPublisher']
+                              conclusion: 'SUCCESS'
             }
         }
     }
